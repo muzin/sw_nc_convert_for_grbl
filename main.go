@@ -120,7 +120,7 @@ func process(millType int, ncFilePath string) {
 func IsConverted(cncGcodeFile *cnc_gcode.CncGcodeFile) bool {
 	cncGcodeCommand := cncGcodeFile.GetHead()
 	for ; cncGcodeCommand != nil; cncGcodeCommand = cncGcodeCommand.Next {
-		if constConverted == cncGcodeCommand.String() {
+		if constConverted == strings.TrimSpace(cncGcodeCommand.String()) {
 			return true
 		}
 	}
