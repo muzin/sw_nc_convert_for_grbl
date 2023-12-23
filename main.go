@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var constConverted = "(Converted)"
+
 func main() {
 
 	//dialog4()
@@ -51,6 +53,12 @@ func input() {
 	// 解析
 	cncGcodeFile := cnc_gcode.Parse(ncFilePath)
 
+	isConverted := IsConverted(cncGcodeFile)
+	if isConverted {
+		fmt.Println("文件已经转换过！！！")
+		os.Exit(255)
+	}
+
 	converterType := ""
 	if millType == 1 {
 		converterType = "sw/mill/m3axis"
@@ -70,6 +78,7 @@ func input() {
 	newCncGcodeFile := cncConverter.Convert(cncGcodeFile)
 
 	cncGcodeCommand := newCncGcodeFile.GetHead()
+	cncGcodeCommand.AddToBack(newCncGcodeFile.ParseToCncGcodeCommand(constConverted))
 	cncGcodeCommand.AddToBack(newCncGcodeFile.ParseToCncGcodeCommand("(Email: sirius1@aliyun.com)"))
 	cncGcodeCommand.AddToBack(newCncGcodeFile.ParseToCncGcodeCommand("(Auther: Sirius)"))
 	cncGcodeCommand.AddToBack(newCncGcodeFile.ParseToCncGcodeCommand("(This Grbl Cnc Gcode Powered By SolidWorks CNC Convert GRBL Tool)"))
@@ -86,6 +95,16 @@ func input() {
 
 	fmt.Printf("转换完成！！！")
 
+}
+
+func IsConverted(cncGcodeFile *cnc_gcode.CncGcodeFile) bool {
+	cncGcodeCommand := cncGcodeFile.GetHead()
+	for ; cncGcodeCommand != nil; cncGcodeCommand = cncGcodeCommand.Next {
+		if constConverted == cncGcodeCommand.String() {
+			return true
+		}
+	}
+	return false
 }
 
 func dialog4() {

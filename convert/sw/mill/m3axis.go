@@ -129,7 +129,16 @@ func (this *M3AxisMillConverter) ConvertG82Gcode() {
 
 		// 查询P指令
 		cncWord := cncGcodeCommandItem.GetLastCncWordByWord("P")
+
+		if cncWord == nil {
+			continue
+		}
+
 		valStr := cncWord.GetValStr()
+		if valStr == "" {
+			continue
+		}
+
 		val, _ := strconv.Atoi(valStr)
 		if val > 0 {
 			// sw 后处理 延时 为毫秒 ，转换为grbl的秒
