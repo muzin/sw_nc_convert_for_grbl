@@ -10,4 +10,10 @@
   grbl G82命令 P的时间为秒，将SolidWorks CAM生成的毫秒转换为秒
 
 
-
+## 编译
+在当前目录下，执行
+```
+CGO_ENABLE=0 GOOS=windows GOARCH=amd64 \
+go build -o sw_nc_converter.exe \
+main.go
+```
