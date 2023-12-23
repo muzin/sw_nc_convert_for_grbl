@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"sw_nc_convert_for_grbl/cnc_gcode"
 	"sw_nc_convert_for_grbl/convert"
@@ -17,17 +18,29 @@ func main() {
 
 	//m3axis()
 
-	input()
+	args := os.Args
+
+	if len(args) == 3 {
+		millType, _ := strconv.Atoi(args[1])
+		path := args[2]
+		process(millType, path)
+	} else if len(args) == 2 {
+		path := args[1]
+		millType, path := input(path)
+		process(millType, path)
+	} else {
+		millType, path := input("")
+		process(millType, path)
+	}
 
 }
 
-func input() {
+func input(ncFilePath string) (millType int, path string) {
 
-	var millType int = 0
-	var ncFilePath = ""
+	millType = 0
 
 	fmt.Println("=========================================")
-	fmt.Println("\t\t\tSolidWorks CNC 转换 GRBL 工具")
+	fmt.Println("\tSolidWorks CNC 转换 GRBL 工具")
 	fmt.Println("=========================================")
 	fmt.Println("铣床类型:")
 	fmt.Println(" 1: M3AXIS")
@@ -42,10 +55,18 @@ func input() {
 		os.Exit(255)
 	}
 
-	fmt.Println("=========================================")
-	fmt.Println("请输入NC文件路径：")
+	if len(strings.TrimSpace(ncFilePath)) == 0 {
+		fmt.Println("=========================================")
+		fmt.Println("请输入NC文件路径：")
+		fmt.Scan(&ncFilePath)
+		path = ncFilePath
+	}
 
-	fmt.Scan(&ncFilePath)
+	return millType, ncFilePath
+
+}
+
+func process(millType int, ncFilePath string) {
 
 	fmt.Println("")
 	fmt.Println("正在解析...")
@@ -94,7 +115,6 @@ func input() {
 	//fmt.Printf("%v\n", toolChangingIndexs)
 
 	fmt.Printf("转换完成！！！")
-
 }
 
 func IsConverted(cncGcodeFile *cnc_gcode.CncGcodeFile) bool {
