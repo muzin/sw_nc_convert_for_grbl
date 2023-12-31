@@ -108,7 +108,7 @@ func (this *Dialog4MillConverter) findToolChangingGcode() *array_list.ArrayList 
 				}
 
 				if !existsT0 {
-					existsT0 = strings.HasPrefix(subWord.String(), "T0")
+					existsT0 = strings.HasPrefix(subWord.String(), "T")
 				}
 
 			}
